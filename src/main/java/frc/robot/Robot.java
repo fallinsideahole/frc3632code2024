@@ -10,12 +10,15 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import edu.wpi.first.cameraserver.CameraServer;
 
 
 public class Robot extends TimedRobot {
@@ -37,10 +40,10 @@ public class Robot extends TimedRobot {
    * The rookie kit comes with CIMs which are brushed motors.
    * Use the appropriate other class if you are using different controllers.
    */
-  CANSparkBase leftRear = new CANSparkMax(1, MotorType.kBrushed);
-  CANSparkBase leftFront = new CANSparkMax(2, MotorType.kBrushed);
-  CANSparkBase rightRear = new CANSparkMax(3, MotorType.kBrushed);
-  CANSparkBase rightFront = new CANSparkMax(4, MotorType.kBrushed);
+  CANSparkBase leftRear = new CANSparkMax(11, MotorType.kBrushless);
+  CANSparkBase leftFront = new CANSparkMax(12, MotorType.kBrushless);
+  CANSparkBase rightRear = new CANSparkMax(13, MotorType.kBrushless);
+  CANSparkBase rightFront = new CANSparkMax(14, MotorType.kBrushless);
 
   /*
    * A class provided to control your drivetrain. Different drive styles can be passed to differential drive:
@@ -48,7 +51,10 @@ public class Robot extends TimedRobot {
    */
   DifferentialDrive m_drivetrain;
 
-  /*
+  /*Slew rate limiter */
+  SlewRateLimiter filter = new SlewRateLimiter(2.5);
+  SlewRateLimiter turnFilter = new SlewRateLimiter(2.5);
+  /*1
    * Launcher motor controller instances.
    *
    * Like the drive motors, set the CAN id's to match your robot or use different
@@ -67,7 +73,7 @@ public class Robot extends TimedRobot {
    * Climber motor controller instance. In the stock Everybot configuration a
    * NEO is used, replace with kBrushed if using a brushed motor.
    */
-  CANSparkBase m_climber = new CANSparkMax(7, MotorType.kBrushless);
+  CANSparkBase m_climber = new CANSparkMax(7, MotorType.kBrushed);
 
     /**
    * The starter code uses the most generic joystick class.
@@ -94,7 +100,7 @@ public class Robot extends TimedRobot {
   /**
    * How many amps the feeder motor can use.
    */
-  static final int FEEDER_CURRENT_LIMIT_A = 60;
+  static final int FEEDER_CURRENT_LIMIT_A = 80;
 
   /**
    * Percent output to run the feeder when expelling note
@@ -116,7 +122,7 @@ public class Robot extends TimedRobot {
    *
    * In our testing we favored the CIM over NEO, if using a NEO lower this to 60
    */
-  static final int LAUNCHER_CURRENT_LIMIT_A = 60;
+  static final int LAUNCHER_CURRENT_LIMIT_A = 80;
 
   /**
    * Percent output to run the launcher when intaking AND expelling note
@@ -147,13 +153,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    CameraServer.startAutomaticCapture();
     m_chooser.setDefaultOption("do nothing", kNothingAuto);
     m_chooser.addOption("launch note and drive", kLaunchAndDrive);
     m_chooser.addOption("launch", kLaunch);
     m_chooser.addOption("drive", kDrive);
     SmartDashboard.putData("Auto choices", m_chooser);
-
-
 
     /*
      * Apply the current limit to the drivetrain motors
@@ -162,7 +167,6 @@ public class Robot extends TimedRobot {
     leftFront.setSmartCurrentLimit(DRIVE_CURRENT_LIMIT_A);
     rightRear.setSmartCurrentLimit(DRIVE_CURRENT_LIMIT_A);
     rightFront.setSmartCurrentLimit(DRIVE_CURRENT_LIMIT_A);
-
     /*
      * Tells the rear wheels to follow the same commands as the front wheels
      */
@@ -172,8 +176,15 @@ public class Robot extends TimedRobot {
     /*
      * One side of the drivetrain must be inverted, as the motors are facing opposite directions
      */
-    leftFront.setInverted(true);
-    rightFront.setInverted(false);
+
+
+    leftFront.setInverted(false);
+    rightFront.setInverted(true);
+
+    leftFront.setIdleMode(IdleMode.kBrake);
+    leftRear.setIdleMode(IdleMode.kBrake);
+    rightFront.setIdleMode(IdleMode.kBrake);
+    rightRear.setIdleMode(IdleMode.kBrake);
 
     m_drivetrain = new DifferentialDrive(leftFront, rightFront);
 
@@ -182,8 +193,8 @@ public class Robot extends TimedRobot {
      *
      * Add white tape to wheel to help determine spin direction.
      */
-    m_feedWheel.setInverted(true);
-    m_launchWheel.setInverted(true);
+    m_feedWheel.setInverted(false);
+    m_launchWheel.setInverted(false);
 
     /*
      * Apply the current limit to the launching mechanism
@@ -332,10 +343,12 @@ public class Robot extends TimedRobot {
      *
      * This setting is driver preference. Try setting the idle modes below to kBrake to see the difference.
      */
+    /*
     leftRear.setIdleMode(IdleMode.kCoast);
     leftFront.setIdleMode(IdleMode.kCoast);
     rightRear.setIdleMode(IdleMode.kCoast);
     rightFront.setIdleMode(IdleMode.kCoast);
+    */
   }
 
   /** This function is called periodically during operator control. */
@@ -446,7 +459,22 @@ public class Robot extends TimedRobot {
      * This was setup with a logitech controller, note there is a switch on the back of the
      * controller that changes how it functions
      */
-    m_drivetrain.arcadeDrive(-m_driverController.getRawAxis(1), -m_driverController.getRawAxis(4), false);
+    //m_drivetrain.tankDrive(-m_driverController.getRawAxis(1), -m_driverController.getRawAxis(5));
+
+    if( (m_driverController.getRawButton(5) || m_driverController.getRawButton(6)) && !(m_driverController.getRawButton(5) && m_driverController.getRawButton(6)))
+    {
+      m_drivetrain.arcadeDrive(filter.calculate(-0.7*m_driverController.getRawAxis(1)), turnFilter.calculate(-0.7*m_driverController.getRawAxis(4)), false);
+    }
+    if(m_driverController.getRawButton(5) && m_driverController.getRawButton(6))
+    {
+      m_drivetrain.arcadeDrive(filter.calculate(-0.45*m_driverController.getRawAxis(1)), turnFilter.calculate(-0.45*m_driverController.getRawAxis(4)), false);
+    }
+    else
+    {
+      m_drivetrain.arcadeDrive(filter.calculate(-1*m_driverController.getRawAxis(1)), turnFilter.calculate(-1*m_driverController.getRawAxis(4)), false);
+    }
+
+    
   }
 }
 
