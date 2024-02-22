@@ -27,6 +27,10 @@ public class Drivetrain extends SubsystemBase {
   /*Class member variables. These variables represent things the class needs to keep track of and use between
   different method calls. */
   DifferentialDrive m_drivetrain;
+  
+  SlewRateLimiter filter = new SlewRateLimiter(2.5);
+  SlewRateLimiter turnFilter = new SlewRateLimiter(2.5);
+
 
   /*Constructor. This method is called when an instance of the class is created. This should generally be used to set up
    * member variables and perform any configuration or set up necessary on hardware.
@@ -84,12 +88,6 @@ public class Drivetrain extends SubsystemBase {
     // the rears set to follow the fronts
     m_drivetrain = new DifferentialDrive(leftFront, rightFront);
 
-  }
-
-  /*Method to control the drivetrain using arcade drive. Arcade drive takes a speed in the X (forward/back) direction
-   * and a rotation about the Z (turning the robot about it's center) and uses these to control the drivetrain motors */
-  public void arcadeDrive(double speed, double rotation) {
-
     /*Slew rate limiter 
      *This will "soften" sudden movements of the control sticks
      *Remove these lines or experiment with the numbers if you do not like the effect
@@ -99,10 +97,19 @@ public class Drivetrain extends SubsystemBase {
      *what this really means is the robot can go from 0 to top speed (1) in 0.4 seconds
      *(or -0.5 to 0.5 in 0.4 seconds, or 0.7 to -0.3 in 0.4 seconds, or 1 to -1 in 0.8 seconds, etc)
     */
-    SlewRateLimiter filter = new SlewRateLimiter(2.5);
-    SlewRateLimiter turnFilter = new SlewRateLimiter(2.5);
+  
+  }
+
+  /*Method to control the drivetrain using arcade drive. Arcade drive takes a speed in the X (forward/back) direction
+   * and a rotation about the Z (turning the robot about it's center) and uses these to control the drivetrain motors */
+  public void arcadeDrive(double speed, double rotation) {
+
+    
 
     m_drivetrain.arcadeDrive(filter.calculate(speed), turnFilter.calculate(rotation));
+
+
+    //m_drivetrain.arcadeDrive(speed, rotation);
   }
 
   /*Method for autonomous without the slew rate filter so it does not introduce noise into intended effect
