@@ -23,7 +23,7 @@ public class Claw extends SubsystemBase {
 
     m_clawWheel.setSmartCurrentLimit(kClawCurrentLimit);
 
-    m_clawWheel.setInverted(false);
+    m_clawWheel.setInverted(true);
 
   }
 

@@ -28,6 +28,16 @@ public class Drivetrain extends SubsystemBase {
   different method calls. */
   DifferentialDrive m_drivetrain;
   
+
+  /*Slew rate limiter 
+     *This will "soften" sudden movements of the control sticks
+     *Remove these lines or experiment with the numbers if you do not like the effect
+     *The number represents how far across its total range of speed outputs the robot can change in one second
+     *a value of 0.8 means the robot can go from 0 to 0.8 of max in one second (or from 0.4 to -0.4, etc)
+     *a value of 2.5 means the robot can go from 0 to 2.5 its max speed in one second
+     *what this really means is the robot can go from 0 to top speed (1) in 0.4 seconds
+     *(or -0.5 to 0.5 in 0.4 seconds, or 0.7 to -0.3 in 0.4 seconds, or 1 to -1 in 0.8 seconds, etc)
+    */
   SlewRateLimiter filter = new SlewRateLimiter(2.5);
   SlewRateLimiter turnFilter = new SlewRateLimiter(2.5);
 
@@ -87,16 +97,6 @@ public class Drivetrain extends SubsystemBase {
     // Put the front motors into the differential drive object. This will control all 4 motors with
     // the rears set to follow the fronts
     m_drivetrain = new DifferentialDrive(leftFront, rightFront);
-
-    /*Slew rate limiter 
-     *This will "soften" sudden movements of the control sticks
-     *Remove these lines or experiment with the numbers if you do not like the effect
-     *The number represents how far across its total range of speed outputs the robot can change in one second
-     *a value of 0.8 means the robot can go from 0 to 0.8 of max in one second (or from 0.4 to -0.4, etc)
-     *a value of 2.5 means the robot can go from 0 to 2.5 its max speed in one second
-     *what this really means is the robot can go from 0 to top speed (1) in 0.4 seconds
-     *(or -0.5 to 0.5 in 0.4 seconds, or 0.7 to -0.3 in 0.4 seconds, or 1 to -1 in 0.8 seconds, etc)
-    */
   
   }
 
@@ -104,11 +104,9 @@ public class Drivetrain extends SubsystemBase {
    * and a rotation about the Z (turning the robot about it's center) and uses these to control the drivetrain motors */
   public void arcadeDrive(double speed, double rotation) {
 
-    
-
     m_drivetrain.arcadeDrive(filter.calculate(speed), turnFilter.calculate(rotation));
 
-
+    //uncomment this line and comment out the line above if you want to disable the slew rate
     //m_drivetrain.arcadeDrive(speed, rotation);
   }
 
