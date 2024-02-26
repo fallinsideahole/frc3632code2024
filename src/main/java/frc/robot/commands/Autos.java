@@ -25,6 +25,7 @@ public final class Autos {
         .andThen(new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain));
   }
 
+  // THIS COMMAND IS CALLED SHOOTAUTO BUT ALL IT DOES IS COMMAND THE DRIVETRAIN TO STOP
 
   public static Command shootAuto(Drivetrain drivetrain) {
     return new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain);

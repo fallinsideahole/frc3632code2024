@@ -40,7 +40,7 @@ public class Claw extends SubsystemBase {
     return this.startEnd(
         // When the command is initialized, set the wheels to the intake speed values
         () -> {
-          m_clawWheel.set(kClawPower);
+          m_clawWheel.set(-kClawPower);
         },
         // When the command stops, stop the wheels
         () -> {
@@ -54,7 +54,7 @@ public class Claw extends SubsystemBase {
     return this.startEnd(
         // When the command is initialized, set the wheels to the intake speed values
         () -> {
-          m_clawWheel.set(-kClawPower);
+          m_clawWheel.set(kClawPower);
         },
         // When the command stops, stop the wheels
         () -> {

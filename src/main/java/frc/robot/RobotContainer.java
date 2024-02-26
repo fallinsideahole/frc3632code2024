@@ -117,8 +117,26 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
+  public Command getAutonomousCommand(String autoMode) {
     // An example command will be run in autonomous
-    return Autos.backupAuto(m_drivetrain);
+    Command autoCommand = null;
+
+    switch (autoMode) {
+      case "do nothing":
+        autoCommand = null;
+      break;
+      case "launch note and drive":
+        autoCommand = Autos.shootAuto(m_drivetrain);
+        break;
+      case "launch":
+        autoCommand = Autos.shootAuto(m_drivetrain);
+        break;
+      case "drive":
+        autoCommand = Autos.backupAuto(m_drivetrain);
+        break;
+    }
+
+    return autoCommand;
+    // return Autos.backupAuto(m_drivetrain);
   }
 }
