@@ -29,6 +29,8 @@ public class Robot extends TimedRobot {
   private static final String kDrive = "drive";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  private double autoStartDelay;
+  private double autoDriveDelay;
 
 
   /**
@@ -48,6 +50,8 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("launch", kLaunch);
     m_chooser.addOption("drive", kDrive);
     SmartDashboard.putData("Auto choices", m_chooser);
+    SmartDashboard.putNumber("autoStartDelay", 0);
+    SmartDashboard.putNumber("autoDriveDelay", 0);
   }
 
   /**
@@ -69,9 +73,12 @@ public class Robot extends TimedRobot {
 
     m_autoSelected = m_chooser.getSelected();
 
+    autoStartDelay = SmartDashboard.getNumber("autoStartDelay", 0);
+    autoDriveDelay =SmartDashboard.getNumber("autoDriveDelay", 0);
+
     System.out.println(m_autoSelected);
 
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand(m_autoSelected);
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand(m_autoSelected, autoStartDelay, autoDriveDelay);
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {

@@ -117,7 +117,7 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand(String autoMode) {
+  public Command getAutonomousCommand(String autoMode, double startDelay, double driveDelay) {
     // An example command will be run in autonomous
     Command autoCommand = null;
 
@@ -126,13 +126,13 @@ public class RobotContainer {
         autoCommand = null;
       break;
       case "launch note and drive":
-        autoCommand = Autos.shootAuto(m_drivetrain);
+        autoCommand = Autos.shootDriveAuto(m_launcher, m_drivetrain, startDelay, driveDelay);
         break;
       case "launch":
-        autoCommand = Autos.shootAuto(m_drivetrain);
+        autoCommand = Autos.shootAuto(m_launcher,m_drivetrain, startDelay);
         break;
       case "drive":
-        autoCommand = Autos.backupAuto(m_drivetrain);
+        autoCommand = Autos.backupAuto(m_drivetrain, startDelay);
         break;
     }
 
