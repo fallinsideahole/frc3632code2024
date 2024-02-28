@@ -30,7 +30,9 @@ public final class Autos {
               .withTimeout(startDelay)
               .andThen(new PrepareLaunch(launcher)
               .withTimeout(LauncherConstants.kLauncherDelay)
-              .andThen(new LaunchNote(launcher)));
+              .andThen(new LaunchNote(launcher)
+              .withTimeout(LauncherConstants.kLauncherDelay)
+              .andThen(new RunCommand(() -> launcher.stopIntake()))));
   }
 
   // launch and drive
@@ -41,9 +43,10 @@ public final class Autos {
               .andThen(new PrepareLaunch(launcher)
               .withTimeout(LauncherConstants.kLauncherDelay)
               .andThen(new LaunchNote(launcher)
-              .withTimeout(driveDelay))
+              .withTimeout(driveDelay)
+              .andThen(new RunCommand(() -> launcher.stopIntake())
               .andThen(new RunCommand(() -> drivetrain.arcadeDrive(AutonConstants.kAutonBackSpeed, 0), drivetrain)
-              .withTimeout(AutonConstants.kAutonBackTime)));
+              .withTimeout(AutonConstants.kAutonBackTime)))));
   }
 
   public static Command shootAmpAuto(Claw m_claw) {

@@ -51,7 +51,7 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("drive", kDrive);
     SmartDashboard.putData("Auto choices", m_chooser);
     SmartDashboard.putNumber("autoStartDelay", 0);
-    SmartDashboard.putNumber("autoDriveDelay", 0);
+    SmartDashboard.putNumber("autoDriveDelay", 1);
   }
 
   /**
@@ -74,7 +74,7 @@ public class Robot extends TimedRobot {
     m_autoSelected = m_chooser.getSelected();
 
     autoStartDelay = SmartDashboard.getNumber("autoStartDelay", 0);
-    autoDriveDelay =SmartDashboard.getNumber("autoDriveDelay", 0);
+    autoDriveDelay =SmartDashboard.getNumber("autoDriveDelay", 1);
 
     System.out.println(m_autoSelected);
 
