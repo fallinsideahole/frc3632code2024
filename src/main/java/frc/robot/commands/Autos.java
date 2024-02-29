@@ -16,37 +16,28 @@ import frc.robot.Constants.LauncherConstants;
 public final class Autos {
   /** Example static factory for an autonomous command. */
   public static Command backupAuto(Drivetrain drivetrain, double startDelay) {
-    return new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain)
-              .withTimeout(startDelay)
-              .andThen(new RunCommand(() -> drivetrain.arcadeDrive(AutonConstants.kAutonBackSpeed, 0), drivetrain)
-              .withTimeout(AutonConstants.kAutonBackTime)
-              .andThen(new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain)));
+    return new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain).withTimeout(startDelay)
+              .andThen(new RunCommand(() -> drivetrain.arcadeDrive(AutonConstants.kAutonBackSpeed, 0), drivetrain).withTimeout(AutonConstants.kAutonBackTime))
+              .andThen(new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain));
   }
 
   // launch only
   public static Command shootAuto(Launcher launcher, Drivetrain drivetrain, double startDelay) {
     //return new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain);
-    return new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain)
-              .withTimeout(startDelay)
-              .andThen(new PrepareLaunch(launcher)
-              .withTimeout(LauncherConstants.kLauncherDelay)
-              .andThen(new LaunchNote(launcher)
-              .withTimeout(LauncherConstants.kLauncherDelay)
-              .andThen(new RunCommand(() -> launcher.stopIntake()))));
+    return new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain).withTimeout(startDelay)
+              .andThen(new PrepareLaunch(launcher).withTimeout(LauncherConstants.kLauncherDelay))
+              .andThen(new LaunchNote(launcher).withTimeout(1))
+              .andThen(new RunCommand(() -> launcher.stopIntake()));
   }
 
   // launch and drive
   public static Command shootDriveAuto(Launcher launcher, Drivetrain drivetrain, double startDelay, double driveDelay) {
     //return new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain);
-    return new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain)
-              .withTimeout(startDelay)
-              .andThen(new PrepareLaunch(launcher)
-              .withTimeout(LauncherConstants.kLauncherDelay)
-              .andThen(new LaunchNote(launcher)
-              .withTimeout(driveDelay)
-              .andThen(new RunCommand(() -> launcher.stopIntake())
-              .andThen(new RunCommand(() -> drivetrain.arcadeDrive(AutonConstants.kAutonBackSpeed, 0), drivetrain)
-              .withTimeout(AutonConstants.kAutonBackTime)))));
+    return new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain).withTimeout(startDelay)
+              .andThen(new PrepareLaunch(launcher).withTimeout(LauncherConstants.kLauncherDelay))
+              .andThen(new LaunchNote(launcher).withTimeout(1))
+              .andThen(new RunCommand(() -> launcher.stopIntake()))
+              .andThen(new RunCommand(() -> drivetrain.arcadeDrive(AutonConstants.kAutonBackSpeed, 0), drivetrain).withTimeout(AutonConstants.kAutonBackTime));
   }
 
   public static Command shootAmpAuto(Claw m_claw) {
