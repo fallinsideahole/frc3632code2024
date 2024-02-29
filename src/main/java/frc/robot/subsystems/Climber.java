@@ -21,6 +21,8 @@ public class Climber extends SubsystemBase {
   public Climber() {
     m_climber = new CANSparkMax(kClimberID, MotorType.kBrushed);
 
+    m_climber.setIdleMode(IdleMode.kBrake);
+
     m_climber.setSmartCurrentLimit(kClimberCurrentLimit);
 
     m_climber.setInverted(false);
