@@ -23,7 +23,6 @@ public final class Autos {
 
   // launch only
   public static Command shootAuto(Launcher launcher, Drivetrain drivetrain, double startDelay) {
-    //return new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain);
     return new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain).withTimeout(startDelay)
               .andThen(new PrepareLaunch(launcher).withTimeout(LauncherConstants.kLauncherDelay))
               .andThen(new LaunchNote(launcher).withTimeout(1))
@@ -32,12 +31,13 @@ public final class Autos {
 
   // launch and drive
   public static Command shootDriveAuto(Launcher launcher, Drivetrain drivetrain, double startDelay, double driveDelay) {
-    //return new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain);
     return new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain).withTimeout(startDelay)
               .andThen(new PrepareLaunch(launcher).withTimeout(LauncherConstants.kLauncherDelay))
               .andThen(new LaunchNote(launcher).withTimeout(1))
-              .andThen(new RunCommand(() -> launcher.stopIntake()))
-              .andThen(new RunCommand(() -> drivetrain.arcadeDrive(AutonConstants.kAutonBackSpeed, 0), drivetrain).withTimeout(AutonConstants.kAutonBackTime));
+              .andThen(new RunCommand(() -> launcher.stopIntake()).withTimeout(0.1))
+              .andThen(new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain).withTimeout(driveDelay))
+              .andThen(new RunCommand(() -> drivetrain.arcadeDrive(AutonConstants.kAutonBackSpeed, 0), drivetrain).withTimeout(AutonConstants.kAutonBackTime))
+              .andThen(new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain));
   }
 
   public static Command shootAmpAuto(Claw m_claw) {

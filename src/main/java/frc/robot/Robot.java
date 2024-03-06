@@ -24,7 +24,7 @@ public class Robot extends TimedRobot {
    * Autonomous selection options.
    */
   private static final String kNothingAuto = "do nothing";
-  private static final String kLaunchAndDrive = "launch drive";
+  private static final String kLaunchAndDrive = "launch note and drive";
   private static final String kLaunch = "launch";
   private static final String kDrive = "drive";
   private String m_autoSelected;
