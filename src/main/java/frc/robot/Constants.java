@@ -60,7 +60,8 @@ public final class Constants {
     // CAN IDs for motor controllers
     public static final int kClimberID = 7;
     public static final int kClimberCurrentLimit = 80;
-    
+    public static final int kClimberStallCurrentLimit = 40;
+
     // Power for climbing
     public static final double kClimberPower = 1;
   }

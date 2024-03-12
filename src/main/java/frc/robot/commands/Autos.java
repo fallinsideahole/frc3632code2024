@@ -41,7 +41,7 @@ public final class Autos {
   }
 
   public static Command shootAmpAuto(Claw m_claw) {
-    return new RunCommand(() -> m_claw.clawOut());
+    return new RunCommand(() -> m_claw.clawOut()).withTimeout(1);
   }
 
 

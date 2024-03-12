@@ -23,7 +23,7 @@ public class Climber extends SubsystemBase {
 
     m_climber.setIdleMode(IdleMode.kBrake);
 
-    m_climber.setSmartCurrentLimit(kClimberCurrentLimit);
+    m_climber.setSmartCurrentLimit(kClimberStallCurrentLimit, kClimberCurrentLimit);
 
     m_climber.setInverted(false);
 
