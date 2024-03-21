@@ -25,6 +25,7 @@ public class Robot extends TimedRobot {
    */
   private static final String kNothingAuto = "do nothing";
   private static final String kLaunchAndDrive = "launch note and drive";
+  private static final String kLaunchAndDriveTurn = "launch note and drive turn";
   private static final String kLaunch = "launch";
   private static final String kDrive = "drive";
   private String m_autoSelected;
@@ -47,6 +48,7 @@ public class Robot extends TimedRobot {
     CameraServer.startAutomaticCapture();
     m_chooser.setDefaultOption("do nothing", kNothingAuto);
     m_chooser.addOption("launch note and drive", kLaunchAndDrive);
+    m_chooser.addOption("launch note , turn, and drive", kLaunchAndDriveTurn);
     m_chooser.addOption("launch", kLaunch);
     m_chooser.addOption("drive", kDrive);
     SmartDashboard.putData("Auto choices", m_chooser);

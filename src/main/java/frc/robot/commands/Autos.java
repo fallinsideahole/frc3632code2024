@@ -40,6 +40,19 @@ public final class Autos {
               .andThen(new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain));
   }
 
+  // launch and drive amp side
+  public static Command shootDriveTurnAuto(Launcher launcher, Drivetrain drivetrain, double startDelay, double driveDelay) {
+    return new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain).withTimeout(startDelay)
+              .andThen(new PrepareLaunch(launcher).withTimeout(LauncherConstants.kLauncherDelay))
+              .andThen(new LaunchNote(launcher).withTimeout(1))
+              .andThen(new RunCommand(() -> launcher.stopIntake()).withTimeout(0.1))
+              .andThen(new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain).withTimeout(driveDelay))
+              .andThen(new RunCommand(() -> drivetrain.arcadeDrive(AutonConstants.kAutonBackSpeed, 0), drivetrain).withTimeout(1))
+              .andThen(new RunCommand(() -> drivetrain.arcadeDrive(0, -AutonConstants.kAutonBackSpeed), drivetrain).withTimeout(1))
+              .andThen(new RunCommand(() -> drivetrain.arcadeDrive(AutonConstants.kAutonBackSpeed, 0), drivetrain).withTimeout(AutonConstants.kAutonBackTime - 0.5))
+              .andThen(new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain));
+  }
+
   public static Command shootAmpAuto(Claw m_claw) {
     return new RunCommand(() -> m_claw.clawOut()).withTimeout(1);
   }

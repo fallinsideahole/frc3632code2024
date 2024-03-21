@@ -128,6 +128,9 @@ public class RobotContainer {
       case "launch note and drive":
         autoCommand = Autos.shootDriveAuto(m_launcher, m_drivetrain, startDelay, driveDelay);
         break;
+        case "launch note and drive turn":
+        autoCommand = Autos.shootDriveTurnAuto(m_launcher, m_drivetrain, startDelay, driveDelay);
+        break;
       case "launch":
         autoCommand = Autos.shootAuto(m_launcher,m_drivetrain, startDelay);
         break;
