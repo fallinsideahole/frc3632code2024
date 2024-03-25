@@ -12,9 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
 
-import edu.wpi.first.cameraserver.CameraServer;
-
-
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
@@ -45,7 +42,6 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
-    CameraServer.startAutomaticCapture();
     m_chooser.setDefaultOption("do nothing", kNothingAuto);
     m_chooser.addOption("launch note and drive", kLaunchAndDrive);
     m_chooser.addOption("launch note , turn, and drive", kLaunchAndDriveTurn);
@@ -87,13 +83,12 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.schedule();
     }
 
-
-
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+
   }
 
   /** This function is called once when teleop is enabled. */

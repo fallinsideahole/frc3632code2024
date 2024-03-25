@@ -13,11 +13,12 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.LaunchNote;
 import frc.robot.commands.PrepareLaunch;
 import frc.robot.commands.SpitNote;
+import frc.robot.commands.SwitchCamera;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Climber;
-
+import frc.robot.subsystems.Camera;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -31,6 +32,7 @@ public class RobotContainer {
   private final Launcher m_launcher = new Launcher();
   private final Claw m_claw = new Claw();
   private final Climber m_climber = new Climber();
+  private final Camera m_cameras = new Camera();
 
   /*The gamepad provided in the KOP shows up like an XBox controller if the mode switch is set to X mode using the
    * switch on the top.*/
@@ -73,6 +75,9 @@ public class RobotContainer {
                         .and(m_driverController.rightBumper())
                         .onFalse(new RunCommand(() -> m_drivetrain.arcadeDrive(-m_driverController.getLeftY(), -m_driverController.getRightX()), m_drivetrain));
 
+
+    m_driverController.leftTrigger(0.1).onTrue(new SwitchCamera(m_cameras, 1));
+    m_driverController.rightTrigger(0.1).onTrue(new SwitchCamera(m_cameras, 2));
 
     //this command makes the launcher a "one button" launcher where you simply hold down A and after one second it fires
     //an alternate version where the launcher is spun up when a is held and fires when right bumper is pressed is shown below
